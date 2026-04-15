@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Result</title>
+
+<style>
+
+body{
+    font-family:Arial;
+    background:linear-gradient(135deg,#11998e,#38ef7d);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    background:white;
+    padding:40px;
+    width:450px;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
+    text-align:center;
+}
+
+.result{
+    font-size:28px;
+    margin:15px 0;
+}
+
+.risk{
+    font-size:20px;
+    font-weight:bold;
+}
+
+.meter{
+    width:100%;
+    height:20px;
+    background:#ddd;
+    border-radius:10px;
+    margin:15px 0;
+}
+
+.fill{
+    height:100%;
+    border-radius:10px;
+}
+
+.section{
+    text-align:left;
+    margin-top:20px;
+}
+
+button{
+    margin-top:20px;
+    padding:10px;
+    background:#11998e;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Prediction Result</h1>
+
+<div class="result" style="color:{{ color }}">
+    {{ prediction }}
+</div>
+
+<div class="risk" style="color:{{ color }}">
+    Risk Level: {{ risk }}
+</div>
+
+<div class="meter">
+    <div class="fill" style="width:{{ score }}%; background:{{ color }}"></div>
+</div>
+
+<div class="section">
+<h3>Reasons:</h3>
+<ul>
+{% for r in reasons %}
+<li>{{ r }}</li>
+{% endfor %}
+</ul>
+</div>
+
+<div class="section">
+<h3>Recommendations:</h3>
+<ul>
+{% for t in tips %}
+<li>{{ t }}</li>
+{% endfor %}
+</ul>
+</div>
+
+<a href="/">
+<button>Go Back</button>
+</a>
+
+</div>
+
+</body>
+</html>

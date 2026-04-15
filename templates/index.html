@@ -1,97 +1,89 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sleep Predictor</title>
 
-<title>Life Style Disease Risk Predictor</title>
-<link rel="stylesheet" href="/static/style.css">
+<style>
+body{
+    font-family:Arial;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    background: linear-gradient(135deg,#ffffff,#f0f4ff);
+    padding:30px;
+    width:420px;
+    border-radius:15px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.3);
+    border:2px solid #667eea;
+}
+
+h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+input,select{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+}
+
+button:hover{
+    background:#5a67d8;
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-<h2>Life Style Disease Risk Predictor</h2>
+<h2>Sleep Disorder Predictor</h2>
 
-<form id="prediction-form">
+<form action="/predict" method="POST">
 
-<label>Age</label>
-<input type="number" name="Age" placeholder="Enter your age">
+<input type="number" name="Age" placeholder="Age" required>
 
-<label>Gender</label>
 <select name="Gender">
-<option value="Male">Male</option>
-<option value="Female">Female</option>
+<option>Male</option>
+<option>Female</option>
 </select>
 
-<label>Occupation</label>
-<select name="Occupation">
-<option>Student</option>
-<option>Engineer</option>
-<option>Doctor</option>
-<option>Teacher</option>
-<option>Manager</option>
-<option>Other</option>
-</select>
+<input type="number" step="0.1" name="Sleep Duration" placeholder="Sleep Duration">
 
-<label>Sleep Duration (hours per night)</label>
-<input type="number" step="0.1" name="Sleep Duration" placeholder="Example: 7">
+<input type="number" name="Physical Activity Level" placeholder="Activity Level">
 
-<label>Physical Activity Level (minutes per day)</label>
-<input type="number" name="Physical Activity Level" placeholder="Example: 30">
-
-<label>BMI Category</label>
 <select name="BMI Category">
-<option>Underweight</option>
 <option>Normal</option>
 <option>Overweight</option>
 <option>Obese</option>
 </select>
 
-<label>Systolic Blood Pressure</label>
-<input type="number" name="Systolic" placeholder="Example: 120">
-
-<label>Diastolic Blood Pressure</label>
-<input type="number" name="Diastolic" placeholder="Example: 80">
+<input type="number" name="Systolic" placeholder="Systolic BP">
+<input type="number" name="Diastolic" placeholder="Diastolic BP">
 
 <button type="submit">Predict</button>
 
 </form>
 
-<div id="result"></div>
-
 </div>
 
-<script>
-
-document.getElementById("prediction-form").addEventListener("submit",async function(e){
-
-e.preventDefault();
-
-const formData = new FormData(this);
-const data = {};
-
-formData.forEach((value,key)=>data[key]=value);
-
-const response = await fetch("/predict",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify(data)
-});
-
-const result = await response.json();
-
-document.getElementById("result").innerHTML =
-"Prediction Result: " + result.prediction;
-
-});
-
-</script>
-
 </body>
-
 </html>
