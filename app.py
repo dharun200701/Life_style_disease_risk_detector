@@ -1,67 +1,75 @@
+# ==============================
+# IMPORT LIBRARIES
+# ==============================
 import pandas as pd
+import shap
 from flask import Flask, render_template, request
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 
+# ==============================
+# INIT APP
+# ==============================
 app = Flask(__name__)
 
-# -------------------------------
-# Load Dataset
-# -------------------------------
-
+# ==============================
+# LOAD DATA
+# ==============================
 sleep_df = pd.read_csv("Sleep_health_and_lifestyle_dataset.csv")
 synthetic_df = pd.read_csv("synthetic_health_lifestyle_dataset.csv")
 
 df = pd.concat([sleep_df, synthetic_df], ignore_index=True)
 
-# Remove missing target
 df.dropna(subset=["Sleep Disorder"], inplace=True)
 
-# Split Blood Pressure
+# Split BP
 if "Blood Pressure" in df.columns:
     df[["Systolic", "Diastolic"]] = df["Blood Pressure"].str.split("/", expand=True)
     df["Systolic"] = pd.to_numeric(df["Systolic"], errors="coerce")
     df["Diastolic"] = pd.to_numeric(df["Diastolic"], errors="coerce")
     df.drop(columns=["Blood Pressure"], inplace=True)
 
-# Features
+# ==============================
+# FEATURES
+# ==============================
 features = [
-    "Age","Gender","Sleep Duration","Physical Activity Level",
-    "BMI Category","Systolic","Diastolic"
+    "Age","Gender","Sleep Duration",
+    "Physical Activity Level","BMI Category",
+    "Systolic","Diastolic"
 ]
 
 target = "Sleep Disorder"
 
-# -------------------------------
-# Encoding
-# -------------------------------
-
+# ==============================
+# ENCODING
+# ==============================
 encoders = {}
 for col in df.select_dtypes(include=["object"]):
     le = LabelEncoder()
     df[col] = le.fit_transform(df[col].astype(str))
     encoders[col] = le
 
-# Fill missing values
+# Fill missing
 for col in features:
-    if pd.api.types.is_numeric_dtype(df[col]):
-        df[col] = df[col].fillna(df[col].median())
-    else:
-        df[col] = df[col].fillna(df[col].mode()[0])
+    df[col] = df[col].fillna(df[col].median())
 
-# -------------------------------
-# Train Model
-# -------------------------------
-
+# ==============================
+# TRAIN MODEL
+# ==============================
 X = df[features]
 y = df[target]
 
 model = RandomForestClassifier()
 model.fit(X, y)
 
-# -------------------------------
-# Routes
-# -------------------------------
+# ==============================
+# SHAP EXPLAINER
+# ==============================
+explainer = shap.TreeExplainer(model)
+
+# ==============================
+# ROUTES
+# ==============================
 
 @app.route('/')
 def home():
@@ -74,11 +82,10 @@ def predict():
     data = request.form.to_dict()
     user_data = pd.DataFrame([data])
 
-    # Convert numeric fields
+    # Convert numeric
     numeric_cols = ["Age","Sleep Duration","Physical Activity Level","Systolic","Diastolic"]
     for col in numeric_cols:
-        if col in user_data:
-            user_data[col] = pd.to_numeric(user_data[col], errors='coerce')
+        user_data[col] = pd.to_numeric(user_data[col], errors='coerce')
 
     # Encode categorical
     for col in user_data.select_dtypes(include=['object']).columns:
@@ -95,93 +102,94 @@ def predict():
 
     user_data = user_data[features]
 
-    # Prediction
+    # ==============================
+    # PREDICTION
+    # ==============================
     pred_encoded = model.predict(user_data)[0]
     prediction = encoders[target].inverse_transform([pred_encoded])[0]
 
-    # -------------------------------
-    # Reasons + Advanced Tips
-    # -------------------------------
+    probs = model.predict_proba(user_data)[0]
+    confidence = max(probs)
 
+    # ==============================
+    # SHAP EXPLANATION
+    # ==============================
+    shap_values = explainer.shap_values(user_data)
+    if isinstance(shap_values, list):
+        class_index = min(int(pred_encoded), len(shap_values) - 1)
+        shap_val = shap_values[class_index][0]
+    elif getattr(shap_values, "ndim", 0) == 3:
+        # Newer SHAP can return (samples, features, classes)
+        class_index = min(int(pred_encoded), shap_values.shape[2] - 1)
+        shap_val = shap_values[0, :, class_index]
+    else:
+        shap_val = shap_values[0]
+
+    feature_names = user_data.columns
+    feature_impact = list(zip(feature_names, shap_val))
+
+    # Sort by importance
+    feature_impact.sort(key=lambda x: abs(x[1]), reverse=True)
+
+    # ==============================
+    # REASONS (Top 4)
+    # ==============================
     reasons = []
+    for feature, val in feature_impact[:4]:
+        if val > 0:
+            reasons.append(f"{feature} is contributing to increased risk based on your current lifestyle pattern.")
+        else:
+            reasons.append(f"{feature} is helping reduce the risk due to healthy values.")
+
+    # ==============================
+    # RECOMMENDATIONS
+    # ==============================
     tips = []
 
-    sleep = float(data.get("Sleep Duration", 0))
-    activity = float(data.get("Physical Activity Level", 0))
-    systolic = float(data.get("Systolic", 120))
-    bmi = data.get("BMI Category", "")
+    if confidence > 0.7:
+        tips.append("Your risk is relatively high. Immediate lifestyle improvements are recommended.")
+    else:
+        tips.append("Your risk is moderate. Small improvements can significantly reduce future risk.")
 
-    # Sleep
-    if sleep < 6:
-        reasons.append("Insufficient sleep duration")
-        tips.append("Maintain a consistent sleep schedule and aim for 7–8 hours of sleep.")
-        tips.append("Avoid mobile and screen exposure before bedtime.")
-    elif sleep > 9:
-        reasons.append("Excessive sleep duration")
-        tips.append("Try to maintain a balanced sleep routine.")
+    tips.append("Maintain 7–8 hours of consistent sleep daily.")
+    tips.append("Increase physical activity like walking, jogging, or exercise.")
+    tips.append("Maintain a healthy BMI through balanced diet.")
+    tips.append("Monitor blood pressure and manage stress effectively.")
 
-    # Activity
-    if activity < 20:
-        reasons.append("Low physical activity level")
-        tips.append("Do at least 30 minutes of daily exercise like walking or jogging.")
-        tips.append("Avoid long sitting hours and stay active.")
-    elif activity > 90:
-        reasons.append("Very high physical activity")
-        tips.append("Ensure proper rest and hydration.")
-
-    # BP
-    if systolic > 130:
-        reasons.append("High blood pressure")
-        tips.append("Reduce salt intake and avoid processed food.")
-        tips.append("Practice yoga or meditation.")
-        tips.append("Monitor BP regularly.")
-
-    # BMI
-    if "Overweight" in bmi or "Obese" in bmi:
-        reasons.append("Unhealthy BMI level")
-        tips.append("Follow a balanced diet with fruits and vegetables.")
-        tips.append("Reduce junk food and sugar intake.")
-        tips.append("Maintain regular physical activity.")
-
-    # General
-    tips.append("Stay hydrated throughout the day.")
-    tips.append("Avoid smoking and limit alcohol consumption.")
-
-    if not reasons:
-        reasons.append("Healthy lifestyle habits")
-        tips.append("Continue maintaining your routine.")
-
-    # -------------------------------
-    # Risk Level + Score
-    # -------------------------------
-
+    # ==============================
+    # RISK LEVEL + COLOR
+    # ==============================
     if prediction.lower() in ["none", "normal"]:
         risk = "Low"
         color = "green"
-        score = 80
-    elif prediction.lower() in ["insomnia"]:
+        score = int(confidence * 40)
+
+    elif prediction.lower() == "insomnia":
         risk = "Medium"
         color = "orange"
-        score = 50
+        score = int(confidence * 70)
+
     else:
         risk = "High"
         color = "red"
-        score = 20
+        score = int(confidence * 100)
 
+    # ==============================
+    # RENDER RESULT PAGE
+    # ==============================
     return render_template(
         "result.html",
         prediction=prediction,
-        reasons=reasons,
-        tips=tips,
         risk=risk,
         color=color,
-        score=score
+        score=score,
+        reasons=reasons,
+        tips=tips
     )
 
 
-# -------------------------------
-# Run App
-# -------------------------------
-
+# ==============================
+# RUN APP
+# ==============================
 if __name__ == "__main__":
     app.run(debug=True)
