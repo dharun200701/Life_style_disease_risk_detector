@@ -1,0 +1,29 @@
+# Python virtual environments
+.venv/
+.venv311/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# Environment variables
+.env
+
+# Flask
+instance/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Model/cache files
+*.joblib

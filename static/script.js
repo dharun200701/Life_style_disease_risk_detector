@@ -1,24 +1,24 @@
-document.getElementById('prediction-form').addEventListener('submit', function(event) {
-    event.preventDefault();
+document.addEventListener("DOMContentLoaded", function () {
 
-    const formData = new FormData(event.target);
-    const data = Object.fromEntries(formData.entries());
+    const form = document.getElementById("predictionForm");
+    const button = document.getElementById("predictBtn");
 
-    fetch('/predict', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-        const predictionResult = document.getElementById('prediction-result');
-        predictionResult.textContent = 'Predicted Sleep Disorder: ' + result.prediction;
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        const predictionResult = document.getElementById('prediction-result');
-        predictionResult.textContent = 'An error occurred. Please try again.';
-    });
+    if (form && button) {
+
+        form.addEventListener("submit", function () {
+
+            button.disabled = true;
+
+            button.innerHTML = `
+                <span>
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    Analyzing Health Data...
+                </span>
+                <i class="fa-solid fa-hourglass-half"></i>
+            `;
+
+        });
+
+    }
+
 });

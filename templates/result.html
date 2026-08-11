@@ -1,110 +1,432 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
+
 <head>
-<title>Result</title>
 
-<style>
+    <meta charset="UTF-8">
 
-body{
-    font-family:Arial;
-    background:linear-gradient(135deg,#11998e,#38ef7d);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-}
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-.container{
-    background:white;
-    padding:40px;
-    width:450px;
-    border-radius:12px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.3);
-    text-align:center;
-}
+    <title>Prediction Result</title>
 
-.result{
-    font-size:28px;
-    margin:15px 0;
-}
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
 
-.risk{
-    font-size:20px;
-    font-weight:bold;
-}
-
-.meter{
-    width:100%;
-    height:20px;
-    background:#ddd;
-    border-radius:10px;
-    margin:15px 0;
-}
-
-.fill{
-    height:100%;
-    border-radius:10px;
-}
-
-.section{
-    text-align:left;
-    margin-top:20px;
-}
-
-button{
-    margin-top:20px;
-    padding:10px;
-    background:#11998e;
-    color:white;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-</style>
 </head>
 
-<body>
 
-<div class="container">
+<body class="result-page">
 
-<h1>Prediction Result</h1>
 
-<div class="result" style="color:{{ color }}">
-    {{ prediction }}
+<div class="dashboard">
+
+
+    <!-- ================================================= -->
+    <!-- HEADER -->
+    <!-- ================================================= -->
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <span class="small-label">
+                AI HEALTH ASSESSMENT
+            </span>
+
+            <h1>
+                Sleep Health Analysis
+            </h1>
+
+            <p>
+                Explainable AI powered prediction dashboard
+            </p>
+
+        </div>
+
+        <div class="xai-badge">
+            SHAP • XAI
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- SUMMARY CARDS -->
+    <!-- ================================================= -->
+
+    <div class="summary-grid">
+
+
+        <!-- Prediction -->
+
+        <div class="summary-card">
+
+            <span class="card-label">
+                PREDICTED CONDITION
+            </span>
+
+            <h2
+                style="color: {{ color }}">
+
+                {{ prediction }}
+
+            </h2>
+
+            <span
+                class="risk-badge"
+                style="
+                color: {{ color }};
+                background: {{ color }}15;
+                ">
+
+                {{ risk }} Risk
+
+            </span>
+
+        </div>
+
+
+        <!-- Confidence -->
+
+        <div class="summary-card">
+
+            <span class="card-label">
+                MODEL CONFIDENCE
+            </span>
+
+            <h2>
+                {{ confidence }}%
+            </h2>
+
+            <div class="progress">
+
+                <div
+                    class="progress-fill"
+                    style="
+                    width: {{ confidence }}%;
+                    background: {{ color }};
+                    ">
+                </div>
+
+            </div>
+
+            <small>
+                Confidence of the Random Forest prediction.
+            </small>
+
+        </div>
+
+
+        <!-- Risk -->
+
+        <div class="summary-card">
+
+            <span class="card-label">
+                RISK SCORE
+            </span>
+
+            <h2>
+
+                {{ score }}
+
+                <small>/100</small>
+
+            </h2>
+
+            <div class="progress">
+
+                <div
+                    class="progress-fill"
+                    style="
+                    width: {{ score }}%;
+                    background: {{ color }};
+                    ">
+                </div>
+
+            </div>
+
+            <small>
+                Overall model-based risk indicator.
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- MAIN CONTENT -->
+    <!-- ================================================= -->
+
+    <div class="main-grid">
+
+
+        <!-- ================================================= -->
+        <!-- SHAP CHART -->
+        <!-- ================================================= -->
+
+        <div class="panel shap-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>
+                        🔍 SHAP Feature Impact
+                    </h2>
+
+                    <p>
+                        Factors influencing the prediction
+                    </p>
+
+                </div>
+
+                <span class="xai-small">
+                    XAI
+                </span>
+
+            </div>
+
+
+            <div class="legend">
+
+                <span class="increase">
+                    ↑ Increased influence
+                </span>
+
+                <span class="decrease">
+                    ↓ Reduced influence
+                </span>
+
+            </div>
+
+
+            <!-- SHAP CHART -->
+
+            <div
+                id="shapChart"
+                class="shap-chart">
+
+                {% for item in feature_impact %}
+
+                <div class="shap-row">
+
+                    <div class="shap-name">
+
+                        {{ item.display_name }}
+
+                    </div>
+
+                    <div class="shap-track">
+
+                        <div
+                            class="shap-zero">
+                        </div>
+
+
+                        {% if item.value >= 0 %}
+
+                        <div
+                            class="shap-bar positive"
+                            data-value="{{ item.absolute }}"
+                            data-max="">
+
+                        </div>
+
+                        {% else %}
+
+                        <div
+                            class="shap-bar negative"
+                            data-value="{{ item.absolute }}"
+                            data-max="">
+
+                        </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div
+                        class="shap-value
+                        {% if item.value >= 0 %}
+                        positive-text
+                        {% else %}
+                        negative-text
+                        {% endif %}">
+
+                        {% if item.value >= 0 %}
+                        +
+                        {% endif %}
+
+                        {{ "%.3f"|format(item.value) }}
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <div class="shap-info">
+
+                <strong>
+                    What does this mean?
+                </strong>
+
+                <p>
+                    SHAP explains how each individual
+                    feature contributes to the model's
+                    prediction. Larger absolute SHAP
+                    values indicate stronger influence.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- RIGHT SIDE -->
+        <!-- ================================================= -->
+
+        <div class="right-column">
+
+
+            <!-- KEY FACTORS -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            💡 Key Factors
+                        </h2>
+
+                        <p>
+                            Main factors identified by SHAP
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="factor-list">
+
+                    {% for reason in reasons %}
+
+                    <div class="factor">
+
+                        <div class="factor-number">
+                            {{ loop.index }}
+                        </div>
+
+                        <p>
+                            {{ reason }}
+                        </p>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+            <!-- RECOMMENDATIONS -->
+
+            <div class="panel recommendation-panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            🌱 Personalized Guidance
+                        </h2>
+
+                        <p>
+                            Lifestyle suggestions based on
+                            influential features
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="recommendation-list">
+
+                    {% for tip in tips %}
+
+                    <div class="recommendation">
+
+                        <span>
+                            ✓
+                        </span>
+
+                        <p>
+                            {{ tip }}
+                        </p>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- BUTTON -->
+    <!-- ================================================= -->
+
+    <div class="bottom-action">
+
+        <a href="/">
+
+            <button class="new-btn">
+
+                ← New Assessment
+
+            </button>
+
+        </a>
+
+        <p class="disclaimer">
+
+            ⚠ This system provides AI-based health risk
+            assessment for educational and awareness
+            purposes. The prediction should not be
+            considered a medical diagnosis or substitute
+            for professional medical advice.
+
+        </p>
+
+    </div>
+
+
 </div>
 
-<div class="risk" style="color:{{ color }}">
-    Risk Level: {{ risk }}
-</div>
 
-<div class="meter">
-    <div class="fill" style="width:{{ score }}%; background:{{ color }}"></div>
-</div>
+<script
+    src="{{ url_for('static', filename='result.js') }}">
+</script>
 
-<div class="section">
-<h3>Reasons:</h3>
-<ul>
-{% for r in reasons %}
-<li>{{ r }}</li>
-{% endfor %}
-</ul>
-</div>
-
-<div class="section">
-<h3>Recommendations:</h3>
-<ul>
-{% for t in tips %}
-<li>{{ t }}</li>
-{% endfor %}
-</ul>
-</div>
-
-<a href="/">
-<button>Go Back</button>
-</a>
-
-</div>
 
 </body>
+
 </html>

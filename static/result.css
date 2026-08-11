@@ -1,0 +1,482 @@
+/* =========================================================
+   RESULT DASHBOARD
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body.result-page {
+    font-family: "Inter", "Segoe UI", Arial, sans-serif;
+    background: #f4f7fb;
+    color: #172033;
+    min-height: 100vh;
+}
+
+/* =========================================================
+   MAIN DASHBOARD
+   ========================================================= */
+
+.dashboard {
+    width: 94%;
+    max-width: 1250px;
+    margin: 35px auto;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.small-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    color: #6875f5;
+}
+
+.dashboard-header h1 {
+    margin-top: 5px;
+    font-size: 30px;
+    font-weight: 800;
+    color: #182033;
+}
+
+.dashboard-header p {
+    margin-top: 6px;
+    color: #718096;
+    font-size: 14px;
+}
+
+.xai-badge {
+    background: #eef0ff;
+    color: #5a67d8;
+    font-weight: 800;
+    font-size: 12px;
+    padding: 10px 16px;
+    border-radius: 20px;
+}
+
+/* =========================================================
+   SUMMARY CARDS
+   ========================================================= */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.summary-card {
+    background: #ffffff;
+    border: 1px solid #e4e9f2;
+    border-radius: 15px;
+    padding: 22px;
+    min-height: 125px;
+    box-shadow: 0 7px 22px rgba(31, 45, 61, 0.07);
+}
+
+.card-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: #7b8798;
+    letter-spacing: 1px;
+}
+
+.summary-card h2 {
+    margin: 9px 0 8px;
+    font-size: 27px;
+    font-weight: 800;
+}
+
+.summary-card h2 small {
+    font-size: 12px;
+    color: #687386;
+}
+
+.risk-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+/* =========================================================
+   PROGRESS BAR
+   ========================================================= */
+
+.progress {
+    width: 100%;
+    height: 7px;
+    background: #e9edf3;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 10px 0 7px;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 20px;
+    transition: width 1s ease;
+}
+
+.summary-card small {
+    color: #7c8797;
+    font-size: 10px;
+}
+
+/* =========================================================
+   MAIN GRID
+   ========================================================= */
+
+.main-grid {
+    display: grid;
+    grid-template-columns: 1.45fr 1fr;
+    gap: 18px;
+}
+
+.panel {
+    background: #ffffff;
+    border: 1px solid #e4e9f2;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 7px 22px rgba(31, 45, 61, 0.06);
+}
+
+/* =========================================================
+   PANEL HEADER
+   ========================================================= */
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.panel-header h2 {
+    font-size: 17px;
+    font-weight: 800;
+    color: #1b2437;
+}
+
+.panel-header p {
+    margin-top: 5px;
+    font-size: 11px;
+    color: #7b8797;
+}
+
+.xai-small {
+    background: #eef0ff;
+    color: #5965dc;
+    padding: 5px 9px;
+    border-radius: 7px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+/* =========================================================
+   SHAP LEGEND
+   ========================================================= */
+
+.legend {
+    display: flex;
+    gap: 18px;
+    margin: 18px 0;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.increase {
+    color: #ef4444;
+}
+
+.decrease {
+    color: #10a981;
+}
+
+/* =========================================================
+   SHAP CHART
+   ========================================================= */
+
+.shap-chart {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.shap-row {
+    display: grid;
+    grid-template-columns: 145px 1fr 60px;
+    align-items: center;
+    gap: 10px;
+    min-height: 42px;
+    margin-bottom: 7px;
+}
+
+.shap-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: #354052;
+    text-align: right;
+}
+
+.shap-track {
+    height: 24px;
+    position: relative;
+    background: #f4f6fa;
+    border-radius: 5px;
+    overflow: visible;
+}
+
+/* Center line */
+
+.shap-zero {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background: #9aa5b5;
+    z-index: 2;
+}
+
+/* SHAP bars */
+
+.shap-bar {
+    position: absolute;
+    top: 4px;
+    height: 16px;
+    width: 0;
+    border-radius: 4px;
+    transition: width 0.9s ease;
+    z-index: 1;
+}
+
+.shap-bar.positive {
+    left: 50%;
+    background: #ef4444;
+}
+
+.shap-bar.negative {
+    right: 50%;
+    background: #10b981;
+}
+
+.shap-value {
+    font-size: 11px;
+    font-weight: 800;
+    text-align: left;
+}
+
+.positive-text {
+    color: #ef4444;
+}
+
+.negative-text {
+    color: #10b981;
+}
+
+/* =========================================================
+   SHAP INFORMATION
+   ========================================================= */
+
+.shap-info {
+    margin-top: 18px;
+    padding: 13px;
+    background: #f5f7ff;
+    border-radius: 10px;
+    border-left: 3px solid #667eea;
+}
+
+.shap-info strong {
+    font-size: 11px;
+    color: #29334a;
+}
+
+.shap-info p {
+    margin-top: 5px;
+    font-size: 10px;
+    line-height: 1.6;
+    color: #718096;
+}
+
+/* =========================================================
+   RIGHT COLUMN
+   ========================================================= */
+
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* =========================================================
+   KEY FACTORS
+   ========================================================= */
+
+.factor-list {
+    margin-top: 15px;
+}
+
+.factor {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px;
+    margin-bottom: 8px;
+    background: #f7f8fc;
+    border-radius: 9px;
+}
+
+.factor-number {
+    min-width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #eef0ff;
+    color: #5965dc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.factor p {
+    font-size: 10px;
+    line-height: 1.5;
+    color: #536075;
+}
+
+/* =========================================================
+   RECOMMENDATIONS
+   ========================================================= */
+
+.recommendation-list {
+    margin-top: 15px;
+}
+
+.recommendation {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 11px;
+    margin-bottom: 8px;
+    background: #f1faf7;
+    border-radius: 9px;
+}
+
+.recommendation span {
+    width: 23px;
+    height: 23px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #d9f5eb;
+    color: #0f9f76;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.recommendation p {
+    font-size: 10px;
+    line-height: 1.5;
+    color: #536075;
+}
+
+/* =========================================================
+   BOTTOM ACTION
+   ========================================================= */
+
+.bottom-action {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.new-btn {
+    border: none;
+    padding: 11px 20px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 5px 14px rgba(102, 126, 234, 0.3);
+    transition: 0.25s;
+}
+
+.new-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(102, 126, 234, 0.4);
+}
+
+.disclaimer {
+    max-width: 750px;
+    margin: 13px auto 0;
+    color: #8993a3;
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard {
+        width: 92%;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .dashboard {
+        margin: 20px auto;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 24px;
+    }
+
+    .shap-row {
+        grid-template-columns: 100px 1fr 50px;
+    }
+
+    .shap-name {
+        font-size: 9px;
+    }
+
+    .shap-value {
+        font-size: 9px;
+    }
+
+    .panel {
+        padding: 15px;
+    }
+}
