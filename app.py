@@ -12,6 +12,7 @@ from flask import Flask, render_template, request
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 
+from groq_chatbot import chat_with_groq
 
 # ============================================================
 # INITIALIZE FLASK
@@ -710,6 +711,27 @@ def predict():
 
     )
 
+@app.route("/chat", methods=["POST"])
+def chat():
+    data = request.get_json()
+
+    message = data.get("message", "").strip()
+
+    if not message:
+        return {
+            "reply": "Please enter a question."
+        }, 400
+
+    context = data.get("context", "")
+
+    reply = chat_with_groq(
+        message=message,
+        context=context
+    )
+
+    return {
+        "reply": reply
+    } 
 
 # ============================================================
 # RUN APPLICATION

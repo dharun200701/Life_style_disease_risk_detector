@@ -15,6 +15,7 @@ body.result-page {
     min-height: 100vh;
 }
 
+
 /* =========================================================
    MAIN DASHBOARD
    ========================================================= */
@@ -24,6 +25,7 @@ body.result-page {
     max-width: 1250px;
     margin: 35px auto;
 }
+
 
 /* =========================================================
    HEADER
@@ -64,6 +66,7 @@ body.result-page {
     padding: 10px 16px;
     border-radius: 20px;
 }
+
 
 /* =========================================================
    SUMMARY CARDS
@@ -111,6 +114,7 @@ body.result-page {
     font-weight: 800;
 }
 
+
 /* =========================================================
    PROGRESS BAR
    ========================================================= */
@@ -135,6 +139,7 @@ body.result-page {
     font-size: 10px;
 }
 
+
 /* =========================================================
    MAIN GRID
    ========================================================= */
@@ -152,6 +157,7 @@ body.result-page {
     padding: 20px;
     box-shadow: 0 7px 22px rgba(31, 45, 61, 0.06);
 }
+
 
 /* =========================================================
    PANEL HEADER
@@ -184,6 +190,7 @@ body.result-page {
     font-weight: 800;
 }
 
+
 /* =========================================================
    SHAP LEGEND
    ========================================================= */
@@ -204,6 +211,7 @@ body.result-page {
     color: #10a981;
 }
 
+
 /* =========================================================
    SHAP CHART
    ========================================================= */
@@ -213,68 +221,134 @@ body.result-page {
     margin-top: 10px;
 }
 
+
+/*
+   Three columns:
+
+   Feature name | SHAP visualisation | value
+*/
+
 .shap-row {
     display: grid;
-    grid-template-columns: 145px 1fr 60px;
+    grid-template-columns: 145px minmax(220px, 1fr) 60px;
     align-items: center;
     gap: 10px;
     min-height: 42px;
     margin-bottom: 7px;
 }
 
+
+/* Feature name */
+
 .shap-name {
     font-size: 11px;
     font-weight: 700;
     color: #354052;
     text-align: right;
+    white-space: nowrap;
 }
 
+
+/* SHAP track */
+
 .shap-track {
-    height: 24px;
     position: relative;
-    background: #f4f6fa;
+
+    width: 100%;
+    height: 24px;
+
+    background: #f1f4f8;
+
     border-radius: 5px;
+
     overflow: visible;
 }
 
-/* Center line */
+
+/*
+   Center zero line
+*/
 
 .shap-zero {
     position: absolute;
+
     left: 50%;
     top: 0;
-    width: 1px;
+
+    width: 2px;
     height: 100%;
-    background: #9aa5b5;
-    z-index: 2;
+
+    background: #7d8797;
+
+    transform: translateX(-50%);
+
+    z-index: 5;
 }
 
-/* SHAP bars */
+
+/*
+   SHAP bars
+*/
 
 .shap-bar {
     position: absolute;
+
     top: 4px;
+
     height: 16px;
+
     width: 0;
-    border-radius: 4px;
-    transition: width 0.9s ease;
-    z-index: 1;
+
+    transition:
+        width 0.8s ease;
+
+    z-index: 3;
 }
+
+
+/*
+   Positive SHAP
+
+   Starts from center
+   and grows toward RIGHT
+*/
 
 .shap-bar.positive {
     left: 50%;
+
     background: #ef4444;
+
+    border-radius:
+        0 4px 4px 0;
 }
+
+
+/*
+   Negative SHAP
+
+   Starts from center
+   and grows toward LEFT
+*/
 
 .shap-bar.negative {
     right: 50%;
+
     background: #10b981;
+
+    border-radius:
+        4px 0 0 4px;
 }
+
+
+/*
+   SHAP numerical value
+*/
 
 .shap-value {
     font-size: 11px;
     font-weight: 800;
     text-align: left;
+    white-space: nowrap;
 }
 
 .positive-text {
@@ -282,8 +356,9 @@ body.result-page {
 }
 
 .negative-text {
-    color: #10b981;
+    color: #10a981;
 }
+
 
 /* =========================================================
    SHAP INFORMATION
@@ -292,9 +367,13 @@ body.result-page {
 .shap-info {
     margin-top: 18px;
     padding: 13px;
+
     background: #f5f7ff;
+
     border-radius: 10px;
-    border-left: 3px solid #667eea;
+
+    border-left:
+        3px solid #667eea;
 }
 
 .shap-info strong {
@@ -304,10 +383,14 @@ body.result-page {
 
 .shap-info p {
     margin-top: 5px;
+
     font-size: 10px;
+
     line-height: 1.6;
+
     color: #718096;
 }
+
 
 /* =========================================================
    RIGHT COLUMN
@@ -318,6 +401,7 @@ body.result-page {
     flex-direction: column;
     gap: 18px;
 }
+
 
 /* =========================================================
    KEY FACTORS
@@ -330,31 +414,45 @@ body.result-page {
 .factor {
     display: flex;
     align-items: flex-start;
+
     gap: 12px;
+
     padding: 11px;
+
     margin-bottom: 8px;
+
     background: #f7f8fc;
+
     border-radius: 9px;
 }
 
 .factor-number {
     min-width: 24px;
     height: 24px;
+
     border-radius: 50%;
+
     background: #eef0ff;
+
     color: #5965dc;
+
     display: flex;
+
     justify-content: center;
     align-items: center;
+
     font-size: 10px;
     font-weight: 800;
 }
 
 .factor p {
     font-size: 10px;
+
     line-height: 1.5;
+
     color: #536075;
 }
+
 
 /* =========================================================
    RECOMMENDATIONS
@@ -366,33 +464,511 @@ body.result-page {
 
 .recommendation {
     display: flex;
+
     align-items: flex-start;
+
     gap: 10px;
+
     padding: 11px;
+
     margin-bottom: 8px;
+
     background: #f1faf7;
+
     border-radius: 9px;
 }
 
 .recommendation span {
     width: 23px;
     height: 23px;
+
     flex-shrink: 0;
+
     border-radius: 50%;
+
     background: #d9f5eb;
+
     color: #0f9f76;
+
     display: flex;
+
     justify-content: center;
     align-items: center;
+
     font-weight: bold;
+
     font-size: 12px;
 }
 
 .recommendation p {
     font-size: 10px;
+
     line-height: 1.5;
+
     color: #536075;
 }
+
+
+/* =========================================================
+   AI HEALTH ASSISTANT
+   ========================================================= */
+
+.chatbot-panel {
+    margin-top: 24px;
+
+    padding: 20px;
+}
+
+
+/* =========================================================
+   CHAT HEADER
+   ========================================================= */
+
+.chatbot-panel .panel-header {
+    margin-bottom: 14px;
+}
+
+.chatbot-panel .panel-header h2 {
+    margin-bottom: 4px;
+}
+
+.chatbot-panel .panel-header p {
+    margin-top: 0;
+}
+
+
+/* =========================================================
+   SUGGESTED QUESTIONS
+   ========================================================= */
+
+.chat-suggestions {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-bottom: 14px;
+}
+
+.suggestion-btn {
+    border:
+        1px solid #dbe3ef;
+
+    background:
+        #ffffff;
+
+    color:
+        #334155;
+
+    border-radius:
+        18px;
+
+    padding:
+        8px 13px;
+
+    font-size:
+        12px;
+
+    font-weight:
+        500;
+
+    cursor:
+        pointer;
+
+    transition:
+        all 0.2s ease;
+}
+
+.suggestion-btn:hover {
+    background:
+        #f1f5f9;
+
+    border-color:
+        #94a3b8;
+
+    transform:
+        translateY(-1px);
+}
+
+.suggestion-btn:active {
+    transform:
+        translateY(0);
+}
+
+
+/* =========================================================
+   CHAT MESSAGE AREA
+   ========================================================= */
+
+.chat-messages {
+    height: 330px;
+
+    overflow-y: auto;
+
+    padding: 18px;
+
+    border:
+        1px solid #dbe3ef;
+
+    border-radius:
+        14px;
+
+    background:
+        #f8fafc;
+
+    margin-bottom:
+        12px;
+
+    scroll-behavior:
+        smooth;
+}
+
+
+/* Scrollbar */
+
+.chat-messages::-webkit-scrollbar {
+    width: 7px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background:
+        transparent;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background:
+        #cbd5e1;
+
+    border-radius:
+        10px;
+}
+
+
+/* =========================================================
+   CHAT MESSAGE ROW
+   ========================================================= */
+
+.chat-message {
+    display: flex;
+
+    align-items: flex-end;
+
+    gap: 9px;
+
+    margin-bottom: 16px;
+
+    width: 100%;
+}
+
+.assistant-message {
+    justify-content:
+        flex-start;
+}
+
+.user-message {
+    justify-content:
+        flex-end;
+}
+
+
+/* =========================================================
+   CHAT AVATAR
+   ========================================================= */
+
+.chat-avatar {
+    width: 32px;
+    height: 32px;
+
+    min-width: 32px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius:
+        50%;
+
+    background:
+        #e2e8f0;
+
+    font-size:
+        15px;
+}
+
+
+/* =========================================================
+   CHAT BUBBLE
+   ========================================================= */
+
+.chat-bubble {
+    display: block;
+
+    max-width:
+        min(72%, 600px);
+
+    padding:
+        11px 14px;
+
+    border-radius:
+        14px;
+
+    font-size:
+        13px;
+
+    line-height:
+        1.55;
+
+    white-space:
+        pre-wrap;
+
+    overflow-wrap:
+        anywhere;
+
+    box-sizing:
+        border-box;
+}
+
+
+/* Assistant message */
+
+.assistant-message .chat-bubble {
+    background:
+        #ffffff;
+
+    color:
+        #334155;
+
+    border:
+        1px solid #e2e8f0;
+
+    border-bottom-left-radius:
+        4px;
+}
+
+
+/* User message */
+
+.user-message .chat-bubble {
+    background:
+        #334155;
+
+    color:
+        #ffffff;
+
+    border:
+        1px solid #334155;
+
+    border-bottom-right-radius:
+        4px;
+}
+
+
+/* =========================================================
+   CHAT INPUT
+   ========================================================= */
+
+.chat-input-area {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    width: 100%;
+}
+
+.chat-input {
+    flex: 1;
+
+    height: 42px;
+
+    min-width: 0;
+
+    box-sizing:
+        border-box;
+
+    border:
+        1px solid #cbd5e1;
+
+    border-radius:
+        11px;
+
+    padding:
+        0 14px;
+
+    background:
+        #ffffff;
+
+    color:
+        #334155;
+
+    font-size:
+        13px;
+
+    outline:
+        none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.chat-input:focus {
+    border-color:
+        #64748b;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(100, 116, 139, 0.1);
+}
+
+.chat-input::placeholder {
+    color:
+        #94a3b8;
+}
+
+
+/* =========================================================
+   SEND BUTTON
+   ========================================================= */
+
+.chat-send-btn {
+    height: 42px;
+
+    min-width: 70px;
+
+    border:
+        none;
+
+    border-radius:
+        11px;
+
+    padding:
+        0 16px;
+
+    background:
+        #334155;
+
+    color:
+        #ffffff;
+
+    font-size:
+        12px;
+
+    font-weight:
+        700;
+
+    cursor:
+        pointer;
+
+    transition:
+        all 0.2s ease;
+}
+
+.chat-send-btn:hover {
+    background:
+        #1e293b;
+}
+
+.chat-send-btn:active {
+    transform:
+        scale(0.97);
+}
+
+.chat-send-btn:disabled {
+    opacity:
+        0.55;
+
+    cursor:
+        not-allowed;
+}
+
+
+/* =========================================================
+   TYPING INDICATOR
+   ========================================================= */
+
+.typing-dots {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 4px;
+}
+
+.typing-dots span {
+    width: 6px;
+    height: 6px;
+
+    background:
+        #94a3b8;
+
+    border-radius:
+        50%;
+
+    animation:
+        typingBounce 1.2s
+        infinite
+        ease-in-out;
+}
+
+.typing-dots span:nth-child(1) {
+    animation-delay:
+        0s;
+}
+
+.typing-dots span:nth-child(2) {
+    animation-delay:
+        0.15s;
+}
+
+.typing-dots span:nth-child(3) {
+    animation-delay:
+        0.3s;
+}
+
+@keyframes typingBounce {
+
+    0%,
+    60%,
+    100% {
+        transform:
+            translateY(0);
+
+        opacity:
+            0.45;
+    }
+
+    30% {
+        transform:
+            translateY(-4px);
+
+        opacity:
+            1;
+    }
+}
+
+
+/* =========================================================
+   CHAT DISCLAIMER
+   ========================================================= */
+
+.chat-disclaimer {
+    margin-top:
+        9px;
+
+    text-align:
+        center;
+
+    font-size:
+        10px;
+
+    color:
+        #94a3b8;
+}
+
 
 /* =========================================================
    BOTTOM ACTION
@@ -400,34 +976,82 @@ body.result-page {
 
 .bottom-action {
     text-align: center;
+
     margin-top: 20px;
 }
 
 .new-btn {
     border: none;
-    padding: 11px 20px;
-    border-radius: 9px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 5px 14px rgba(102, 126, 234, 0.3);
-    transition: 0.25s;
+
+    padding:
+        11px 20px;
+
+    border-radius:
+        9px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #667eea,
+            #764ba2
+        );
+
+    color:
+        white;
+
+    font-size:
+        12px;
+
+    font-weight:
+        700;
+
+    cursor:
+        pointer;
+
+    box-shadow:
+        0 5px 14px
+        rgba(
+            102,
+            126,
+            234,
+            0.3
+        );
+
+    transition:
+        0.25s;
 }
 
 .new-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(102, 126, 234, 0.4);
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 8px 18px
+        rgba(
+            102,
+            126,
+            234,
+            0.4
+        );
 }
 
 .disclaimer {
-    max-width: 750px;
-    margin: 13px auto 0;
-    color: #8993a3;
-    font-size: 9px;
-    line-height: 1.5;
+    max-width:
+        750px;
+
+    margin:
+        13px auto 0;
+
+    color:
+        #8993a3;
+
+    font-size:
+        9px;
+
+    line-height:
+        1.5;
 }
+
 
 /* =========================================================
    RESPONSIVE DESIGN
@@ -436,47 +1060,95 @@ body.result-page {
 @media (max-width: 900px) {
 
     .summary-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+            1fr;
     }
 
     .main-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+            1fr;
     }
 
     .dashboard {
-        width: 92%;
+        width:
+            92%;
     }
+
 }
+
+
+@media (max-width: 700px) {
+
+    .chat-messages {
+        height:
+            300px;
+    }
+
+    .chat-bubble {
+        max-width:
+            82%;
+    }
+
+}
+
 
 @media (max-width: 600px) {
 
     .dashboard {
-        margin: 20px auto;
+        margin:
+            20px auto;
     }
 
     .dashboard-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+
+        gap:
+            12px;
     }
 
     .dashboard-header h1 {
-        font-size: 24px;
+        font-size:
+            24px;
     }
 
     .shap-row {
-        grid-template-columns: 100px 1fr 50px;
+        grid-template-columns:
+            90px minmax(120px, 1fr) 50px;
+
+        gap:
+            7px;
     }
 
     .shap-name {
-        font-size: 9px;
+        font-size:
+            9px;
     }
 
     .shap-value {
-        font-size: 9px;
+        font-size:
+            9px;
     }
 
     .panel {
-        padding: 15px;
+        padding:
+            15px;
     }
+
+    .chat-input-area {
+        gap:
+            6px;
+    }
+
+    .chat-send-btn {
+        min-width:
+            62px;
+
+        padding:
+            0 10px;
+    }
+
 }

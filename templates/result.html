@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -11,8 +10,13 @@
 
     <title>Prediction Result</title>
 
+    <!-- Main stylesheet -->
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Result page stylesheet -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='result.css') }}">
 
 </head>
 
@@ -59,7 +63,7 @@
     <div class="summary-grid">
 
 
-        <!-- Prediction -->
+        <!-- PREDICTION -->
 
         <div class="summary-card">
 
@@ -67,8 +71,7 @@
                 PREDICTED CONDITION
             </span>
 
-            <h2
-                style="color: {{ color }}">
+            <h2 style="color: {{ color }};">
 
                 {{ prediction }}
 
@@ -77,8 +80,8 @@
             <span
                 class="risk-badge"
                 style="
-                color: {{ color }};
-                background: {{ color }}15;
+                    color: {{ color }};
+                    background: {{ color }}15;
                 ">
 
                 {{ risk }} Risk
@@ -88,7 +91,7 @@
         </div>
 
 
-        <!-- Confidence -->
+        <!-- CONFIDENCE -->
 
         <div class="summary-card">
 
@@ -105,8 +108,8 @@
                 <div
                     class="progress-fill"
                     style="
-                    width: {{ confidence }}%;
-                    background: {{ color }};
+                        width: {{ confidence }}%;
+                        background: {{ color }};
                     ">
                 </div>
 
@@ -119,7 +122,7 @@
         </div>
 
 
-        <!-- Risk -->
+        <!-- RISK SCORE -->
 
         <div class="summary-card">
 
@@ -140,8 +143,8 @@
                 <div
                     class="progress-fill"
                     style="
-                    width: {{ score }}%;
-                    background: {{ color }};
+                        width: {{ score }}%;
+                        background: {{ color }};
                     ">
                 </div>
 
@@ -190,6 +193,8 @@
             </div>
 
 
+            <!-- LEGEND -->
+
             <div class="legend">
 
                 <span class="increase">
@@ -219,11 +224,10 @@
 
                     </div>
 
+
                     <div class="shap-track">
 
-                        <div
-                            class="shap-zero">
-                        </div>
+                        <div class="shap-zero"></div>
 
 
                         {% if item.value >= 0 %}
@@ -232,7 +236,6 @@
                             class="shap-bar positive"
                             data-value="{{ item.absolute }}"
                             data-max="">
-
                         </div>
 
                         {% else %}
@@ -241,7 +244,6 @@
                             class="shap-bar negative"
                             data-value="{{ item.absolute }}"
                             data-max="">
-
                         </div>
 
                         {% endif %}
@@ -250,15 +252,17 @@
 
 
                     <div
-                        class="shap-value
-                        {% if item.value >= 0 %}
-                        positive-text
-                        {% else %}
-                        negative-text
-                        {% endif %}">
+                        class="
+                            shap-value
+                            {% if item.value >= 0 %}
+                                positive-text
+                            {% else %}
+                                negative-text
+                            {% endif %}
+                        ">
 
                         {% if item.value >= 0 %}
-                        +
+                            +
                         {% endif %}
 
                         {{ "%.3f"|format(item.value) }}
@@ -271,6 +275,8 @@
 
             </div>
 
+
+            <!-- SHAP EXPLANATION -->
 
             <div class="shap-info">
 
@@ -391,20 +397,155 @@
 
 
     <!-- ================================================= -->
-    <!-- BUTTON -->
+    <!-- AI HEALTH ASSISTANT -->
+    <!-- ================================================= -->
+
+    <div class="panel chatbot-panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <h2>
+                    🤖 AI Health Assistant
+                </h2>
+
+                <p>
+                    Ask questions about your prediction and lifestyle.
+                </p>
+
+            </div>
+
+            <span class="xai-small">
+                GROQ AI
+            </span>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- SUGGESTED QUESTIONS -->
+        <!-- ================================================= -->
+
+        <div class="chat-suggestions">
+
+            <button
+                type="button"
+                class="suggestion-btn"
+                onclick="askSuggestedQuestion('Why did I get this prediction?')">
+
+                Why did I get this prediction?
+
+            </button>
+
+
+            <button
+                type="button"
+                class="suggestion-btn"
+                onclick="askSuggestedQuestion('What lifestyle changes should I make?')">
+
+                What lifestyle changes should I make?
+
+            </button>
+
+
+            <button
+                type="button"
+                class="suggestion-btn"
+                onclick="askSuggestedQuestion('Can you explain my SHAP factors simply?')">
+
+                Explain my SHAP factors
+
+            </button>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- CHAT MESSAGES -->
+        <!-- ================================================= -->
+
+        <div
+            id="chatMessages"
+            class="chat-messages">
+
+            <div class="chat-message assistant-message">
+
+                <div class="chat-avatar">
+                    🤖
+                </div>
+
+                <div class="chat-bubble">
+
+                    Hi! I'm your AI Health Assistant.
+
+                    You can ask me about your prediction,
+                    risk score, SHAP factors, or lifestyle
+                    recommendations.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- CHAT INPUT -->
+        <!-- ================================================= -->
+
+        <div class="chat-input-area">
+
+            <input
+                type="text"
+                id="chatInput"
+                class="chat-input"
+                placeholder="Ask a question about your results..."
+                autocomplete="off">
+
+            <button
+                type="button"
+                id="chatSendBtn"
+                class="chat-send-btn"
+                onclick="sendChatMessage()">
+
+                Send
+
+            </button>
+
+        </div>
+
+
+        <!-- DISCLAIMER -->
+
+        <div class="chat-disclaimer">
+
+            AI-generated information is for educational purposes
+            and is not a medical diagnosis.
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- BOTTOM ACTION -->
     <!-- ================================================= -->
 
     <div class="bottom-action">
 
         <a href="/">
 
-            <button class="new-btn">
+            <button
+                type="button"
+                class="new-btn">
 
                 ← New Assessment
 
             </button>
 
         </a>
+
 
         <p class="disclaimer">
 
@@ -422,9 +563,29 @@
 </div>
 
 
-<script
-    src="{{ url_for('static', filename='result.js') }}">
+<!-- ================================================= -->
+<!-- PASS FLASK DATA TO JAVASCRIPT -->
+<!-- ================================================= -->
+
+<script>
+
+    window.predictionContext = {
+        prediction: {{ prediction|tojson }},
+        risk: {{ risk|tojson }},
+        confidence: {{ confidence|tojson }},
+        score: {{ score|tojson }},
+        reasons: {{ reasons|tojson }},
+        tips: {{ tips|tojson }}
+    };
+
 </script>
+
+
+<!-- ================================================= -->
+<!-- RESULT JAVASCRIPT -->
+<!-- ================================================= -->
+
+<script src="{{ url_for('static', filename='result.js') }}"></script>
 
 
 </body>
