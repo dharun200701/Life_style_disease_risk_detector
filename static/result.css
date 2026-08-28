@@ -1152,3 +1152,291 @@ body.result-page {
     }
 
 }
+
+/* =========================================================
+   GROQ AI FORMATTED RESPONSE
+   ========================================================= */
+
+.ai-paragraph {
+    margin: 0 0 10px 0;
+    line-height: 1.65;
+}
+
+.ai-paragraph:last-child {
+    margin-bottom: 0;
+}
+
+
+/* =========================================================
+   AI HEADINGS
+   ========================================================= */
+
+.ai-heading {
+    margin: 4px 0 10px 0;
+    font-size: 15px;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.ai-subheading {
+    margin: 5px 0 8px 0;
+    font-size: 14px;
+    font-weight: 800;
+    color: #334155;
+}
+
+
+/* =========================================================
+   AI BOLD / ITALIC
+   ========================================================= */
+
+.chat-bubble strong {
+    font-weight: 800;
+    color: #172033;
+}
+
+.user-message .chat-bubble strong {
+    color: #ffffff;
+}
+
+.chat-bubble em {
+    font-style: italic;
+}
+
+
+/* =========================================================
+   AI INLINE CODE
+   ========================================================= */
+
+.chat-bubble code {
+    padding: 2px 5px;
+    border-radius: 4px;
+    background: #f1f5f9;
+    color: #475569;
+    font-family: Consolas, monospace;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   AI LIST
+   ========================================================= */
+
+.ai-list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+
+    margin: 7px 0;
+
+    line-height: 1.55;
+}
+
+.ai-bullet {
+    flex-shrink: 0;
+
+    width: 17px;
+    height: 17px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #64748b;
+
+    font-weight: 900;
+}
+
+.ai-number {
+    flex-shrink: 0;
+
+    width: 20px;
+    height: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #e2e8f0;
+
+    color: #475569;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   AI QUOTE
+   ========================================================= */
+
+.ai-quote {
+    margin: 10px 0;
+
+    padding: 9px 12px;
+
+    border-left: 3px solid #94a3b8;
+
+    background: #f8fafc;
+
+    color: #64748b;
+
+    font-style: italic;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   AI DIVIDER
+   ========================================================= */
+
+.ai-divider {
+    border: none;
+
+    border-top:
+        1px solid #e2e8f0;
+
+    margin:
+        13px 0;
+}
+
+
+/* =========================================================
+   AI TABLE
+   ========================================================= */
+
+.ai-table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+
+    margin:
+        12px 0 14px 0;
+
+    border:
+        1px solid #e2e8f0;
+
+    border-radius:
+        9px;
+}
+
+
+/* Table */
+
+.ai-table {
+    width: 100%;
+
+    min-width: 520px;
+
+    border-collapse:
+        collapse;
+
+    font-size:
+        11px;
+
+    background:
+        #ffffff;
+}
+
+
+/* Header */
+
+.ai-table th {
+    padding:
+        10px 11px;
+
+    background:
+        #f1f5f9;
+
+    color:
+        #334155;
+
+    font-weight:
+        800;
+
+    text-align:
+        left;
+
+    border-bottom:
+        1px solid #dbe3ec;
+}
+
+
+/* Cells */
+
+.ai-table td {
+    padding:
+        10px 11px;
+
+    color:
+        #475569;
+
+    line-height:
+        1.45;
+
+    vertical-align:
+        top;
+
+    border-bottom:
+        1px solid #edf1f5;
+}
+
+
+/* Last row */
+
+.ai-table tbody tr:last-child td {
+    border-bottom:
+        none;
+}
+
+
+/* Table hover */
+
+.ai-table tbody tr:hover {
+    background:
+        #f8fafc;
+}
+
+
+/* =========================================================
+   CHAT BUBBLE FOR FORMATTED CONTENT
+   ========================================================= */
+
+.assistant-message .chat-bubble {
+    max-width:
+        min(88%, 760px);
+
+    padding:
+        13px 16px;
+
+    line-height:
+        1.55;
+}
+
+
+/* =========================================================
+   MOBILE TABLE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .assistant-message .chat-bubble {
+        max-width:
+            88%;
+    }
+
+    .ai-table {
+        min-width:
+            500px;
+    }
+
+    .ai-table th,
+    .ai-table td {
+        padding:
+            8px;
+    }
+
+}

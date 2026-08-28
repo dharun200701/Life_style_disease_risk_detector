@@ -1,5 +1,7 @@
 // ============================================================
 // RESULT PAGE JAVASCRIPT
+// Lifestyle Disease Prediction System
+// Groq AI Health Assistant + SHAP Visualization
 // ============================================================
 
 
@@ -9,82 +11,74 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    // --------------------------------------------------------
     // Prediction form
-    // --------------------------------------------------------
-
-    const form =
-        document.getElementById("predictionForm");
-
-    const button =
-        document.getElementById("predictBtn");
-
+    const form = document.getElementById("predictionForm");
+    const button = document.getElementById("predictBtn");
 
     if (form && button) {
 
-        form.addEventListener(
-            "submit",
-            function () {
+        form.addEventListener("submit", function () {
 
-                button.disabled = true;
+            button.disabled = true;
 
-                button.innerHTML = `
-                    <span>
-                        <i class="fa-solid fa-spinner fa-spin"></i>
-                        Analyzing Health Data...
-                    </span>
+            button.innerHTML = `
+                <span>
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    Analyzing Health Data...
+                </span>
+                <i class="fa-solid fa-hourglass-half"></i>
+            `;
 
-                    <i class="fa-solid fa-hourglass-half"></i>
-                `;
-
-            }
-        );
+        });
 
     }
 
 
-    // --------------------------------------------------------
     // Initialize SHAP chart
-    // --------------------------------------------------------
-
     initializeShapChart();
 
 
-    // --------------------------------------------------------
-    // Chat input - Enter key
-    // --------------------------------------------------------
-
-    const chatInput =
-        document.getElementById("chatInput");
-
+    // Chat input
+    const chatInput = document.getElementById("chatInput");
 
     if (chatInput) {
 
-        chatInput.addEventListener(
-            "keydown",
-            function (event) {
+        chatInput.addEventListener("keydown", function (event) {
 
-                if (event.key === "Enter") {
+            if (
+                event.key === "Enter" &&
+                !event.shiftKey
+            ) {
 
-                    event.preventDefault();
+                event.preventDefault();
 
-                    sendChatMessage();
-
-                }
+                sendChatMessage();
 
             }
-        );
+
+        });
 
     }
 
 
-    // --------------------------------------------------------
-    // Scroll chat to bottom
-    // --------------------------------------------------------
+    // Chat button
+    const sendButton =
+        document.getElementById("chatSendBtn");
 
+    if (sendButton) {
+
+        sendButton.addEventListener("click", function () {
+
+            sendChatMessage();
+
+        });
+
+    }
+
+
+    // Scroll chat to bottom
     const chatMessages =
         document.getElementById("chatMessages");
-
 
     if (chatMessages) {
 
@@ -108,10 +102,6 @@ function initializeShapChart() {
 
     if (!shapBars.length) {
 
-        console.log(
-            "No SHAP bars found."
-        );
-
         return;
 
     }
@@ -120,71 +110,47 @@ function initializeShapChart() {
     let maxValue = 0;
 
 
-    // --------------------------------------------------------
-    // Find largest absolute SHAP value
-    // --------------------------------------------------------
+    // Find maximum absolute SHAP value
+    shapBars.forEach(function (bar) {
 
-    shapBars.forEach(
-        function (bar) {
+        const value =
+            parseFloat(
+                bar.getAttribute("data-value") || "0"
+            );
 
-            const value =
-                parseFloat(
-                    bar.getAttribute(
-                        "data-value"
-                    ) || "0"
-                );
+        if (value > maxValue) {
 
-
-            if (value > maxValue) {
-
-                maxValue = value;
-
-            }
+            maxValue = value;
 
         }
-    );
+
+    });
 
 
-    if (maxValue === 0) {
+    if (maxValue <= 0) {
 
         return;
 
     }
 
 
-    // --------------------------------------------------------
-    // Set bar widths
-    // --------------------------------------------------------
+    // Calculate relative width
+    shapBars.forEach(function (bar) {
 
-    shapBars.forEach(
-        function (bar) {
-
-            const value =
-                parseFloat(
-                    bar.getAttribute(
-                        "data-value"
-                    ) || "0"
-                );
+        const value =
+            parseFloat(
+                bar.getAttribute("data-value") || "0"
+            );
 
 
-            /*
-             * Maximum bar length is 50%
-             * because the chart grows from
-             * the center zero line.
-             */
-
-            const percentage =
-                (value / maxValue) * 50;
+        const percentage =
+            (value / maxValue) * 50;
 
 
-            bar.style.width =
-                Math.min(
-                    percentage,
-                    50
-                ) + "%";
+        bar.style.width =
+            Math.min(percentage, 50) + "%";
 
-        }
-    );
+    });
 
 }
 
@@ -220,28 +186,533 @@ Confidence: ${context.confidence || "Not available"}%
 
 Risk Score: ${context.score || "Not available"}/100
 
-
 Key Factors:
 
-${reasons.map(
-    function (reason) {
+${reasons.map(function (reason) {
 
-        return "- " + reason;
+    return "- " + reason;
 
-    }
-).join("\n")}
-
+}).join("\n")}
 
 Lifestyle Recommendations:
 
-${tips.map(
-    function (tip) {
+${tips.map(function (tip) {
 
-        return "- " + tip;
+    return "- " + tip;
+
+}).join("\n")}
+`;
+
+}
+
+
+// ============================================================
+// ESCAPE HTML
+// ============================================================
+
+function escapeHTML(text) {
+
+    if (
+        text === null ||
+        text === undefined
+    ) {
+
+        return "";
 
     }
-).join("\n")}
-`;
+
+
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+// ============================================================
+// FORMAT INLINE MARKDOWN
+// ============================================================
+
+function formatInlineMarkdown(text) {
+
+    let result =
+        escapeHTML(text);
+
+
+    // Bold: **text**
+    result =
+        result.replace(
+            /\*\*(.*?)\*\*/g,
+            "<strong>$1</strong>"
+        );
+
+
+    // Italic: *text*
+    result =
+        result.replace(
+            /(^|[^\*])\*([^*\n]+)\*(?!\*)/g,
+            "$1<em>$2</em>"
+        );
+
+
+    // Inline code: `text`
+    result =
+        result.replace(
+            /`([^`]+)`/g,
+            "<code>$1</code>"
+        );
+
+
+    return result;
+
+}
+
+
+// ============================================================
+// FORMAT GROQ AI RESPONSE
+// ============================================================
+
+function formatAIResponse(message) {
+
+    if (
+        message === null ||
+        message === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    const text =
+        String(message)
+            .replace(/\r\n/g, "\n")
+            .replace(/\r/g, "\n")
+            .trim();
+
+
+    if (!text) {
+
+        return "";
+
+    }
+
+
+    const lines =
+        text.split("\n");
+
+
+    let html = "";
+
+    let paragraph = [];
+
+    let inTable = false;
+
+
+    // --------------------------------------------------------
+    // Flush paragraph
+    // --------------------------------------------------------
+
+    function flushParagraph() {
+
+        if (!paragraph.length) {
+
+            return;
+
+        }
+
+
+        const content =
+            paragraph
+                .join(" ")
+                .trim();
+
+
+        if (content) {
+
+            html += `
+                <p class="ai-paragraph">
+                    ${formatInlineMarkdown(content)}
+                </p>
+            `;
+
+        }
+
+
+        paragraph = [];
+
+    }
+
+
+    // --------------------------------------------------------
+    // Close table
+    // --------------------------------------------------------
+
+    function closeTable() {
+
+        if (inTable) {
+
+            html += `
+                    </tbody>
+                    </table>
+                </div>
+            `;
+
+        }
+
+
+        inTable = false;
+
+    }
+
+
+    // --------------------------------------------------------
+    // Process lines
+    // --------------------------------------------------------
+
+    for (
+        let i = 0;
+        i < lines.length;
+        i++
+    ) {
+
+        const line =
+            lines[i].trim();
+
+
+        // Empty line
+        if (!line) {
+
+            flushParagraph();
+
+            if (inTable) {
+
+                closeTable();
+
+            }
+
+            continue;
+
+        }
+
+
+        // ----------------------------------------------------
+        // Markdown table
+        // ----------------------------------------------------
+
+        if (
+            line.startsWith("|") &&
+            line.endsWith("|")
+        ) {
+
+            flushParagraph();
+
+
+            const cells =
+                line
+                    .split("|")
+                    .slice(1, -1)
+                    .map(function (cell) {
+
+                        return cell.trim();
+
+                    });
+
+
+            // Separator row
+            const isSeparator =
+                cells.every(function (cell) {
+
+                    return /^:?-{3,}:?$/.test(cell);
+
+                });
+
+
+            if (isSeparator) {
+
+                continue;
+
+            }
+
+
+            // Start table
+            if (!inTable) {
+
+                html += `
+                    <div class="ai-table-wrapper">
+                        <table class="ai-table">
+                            <thead>
+                                <tr>
+                `;
+
+
+                cells.forEach(function (cell) {
+
+                    html += `
+                        <th>
+                            ${formatInlineMarkdown(cell)}
+                        </th>
+                    `;
+
+                });
+
+
+                html += `
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+
+                inTable = true;
+
+            }
+
+            else {
+
+                // Table row
+                html += "<tr>";
+
+
+                cells.forEach(function (cell) {
+
+                    html += `
+                        <td>
+                            ${formatInlineMarkdown(cell)}
+                        </td>
+                    `;
+
+                });
+
+
+                html += "</tr>";
+
+            }
+
+
+            continue;
+
+        }
+
+
+        // Close table before normal content
+        if (inTable) {
+
+            closeTable();
+
+        }
+
+
+        // ----------------------------------------------------
+        // H1
+        // ----------------------------------------------------
+
+        if (line.startsWith("# ")) {
+
+            flushParagraph();
+
+            html += `
+                <h3 class="ai-heading">
+                    ${formatInlineMarkdown(
+                        line.substring(2)
+                    )}
+                </h3>
+            `;
+
+            continue;
+
+        }
+
+
+        // ----------------------------------------------------
+        // H2
+        // ----------------------------------------------------
+
+        if (line.startsWith("## ")) {
+
+            flushParagraph();
+
+            html += `
+                <h3 class="ai-heading">
+                    ${formatInlineMarkdown(
+                        line.substring(3)
+                    )}
+                </h3>
+            `;
+
+            continue;
+
+        }
+
+
+        // ----------------------------------------------------
+        // H3
+        // ----------------------------------------------------
+
+        if (line.startsWith("### ")) {
+
+            flushParagraph();
+
+            html += `
+                <h4 class="ai-subheading">
+                    ${formatInlineMarkdown(
+                        line.substring(4)
+                    )}
+                </h4>
+            `;
+
+            continue;
+
+        }
+
+
+        // ----------------------------------------------------
+        // Bullet list
+        // ----------------------------------------------------
+
+        if (
+            /^[-*•]\s+/.test(line)
+        ) {
+
+            flushParagraph();
+
+
+            const content =
+                line.replace(
+                    /^[-*•]\s+/,
+                    ""
+                );
+
+
+            html += `
+                <div class="ai-list-item">
+                    <span class="ai-bullet">•</span>
+                    <span>
+                        ${formatInlineMarkdown(content)}
+                    </span>
+                </div>
+            `;
+
+
+            continue;
+
+        }
+
+
+        // ----------------------------------------------------
+        // Numbered list
+        // ----------------------------------------------------
+
+        if (
+            /^\d+\.\s+/.test(line)
+        ) {
+
+            flushParagraph();
+
+
+            const match =
+                line.match(
+                    /^(\d+)\.\s+(.*)$/
+                );
+
+
+            if (match) {
+
+                html += `
+                    <div class="ai-list-item numbered">
+
+                        <span class="ai-number">
+                            ${match[1]}
+                        </span>
+
+                        <span>
+                            ${formatInlineMarkdown(
+                                match[2]
+                            )}
+                        </span>
+
+                    </div>
+                `;
+
+            }
+
+
+            continue;
+
+        }
+
+
+        // ----------------------------------------------------
+        // Blockquote
+        // ----------------------------------------------------
+
+        if (
+            line.startsWith("> ")
+        ) {
+
+            flushParagraph();
+
+
+            html += `
+                <div class="ai-quote">
+                    ${formatInlineMarkdown(
+                        line.substring(2)
+                    )}
+                </div>
+            `;
+
+
+            continue;
+
+        }
+
+
+        // ----------------------------------------------------
+        // Horizontal line
+        // ----------------------------------------------------
+
+        if (
+            /^[-*_]{3,}$/.test(line)
+        ) {
+
+            flushParagraph();
+
+
+            html += `
+                <hr class="ai-divider">
+            `;
+
+
+            continue;
+
+        }
+
+
+        // ----------------------------------------------------
+        // Normal text
+        // ----------------------------------------------------
+
+        paragraph.push(line);
+
+    }
+
+
+    // Flush remaining paragraph
+    flushParagraph();
+
+
+    // Close remaining table
+    if (inTable) {
+
+        closeTable();
+
+    }
+
+
+    return html;
 
 }
 
@@ -268,14 +739,9 @@ function addChatMessage(
     }
 
 
-    // --------------------------------------------------------
     // Message row
-    // --------------------------------------------------------
-
     const messageRow =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
 
     messageRow.className =
@@ -284,14 +750,9 @@ function addChatMessage(
             : "chat-message assistant-message";
 
 
-    // --------------------------------------------------------
     // Avatar
-    // --------------------------------------------------------
-
     const avatar =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
 
     avatar.className =
@@ -304,53 +765,48 @@ function addChatMessage(
             : "🤖";
 
 
-    // --------------------------------------------------------
-    // Message bubble
-    // --------------------------------------------------------
-
+    // Bubble
     const bubble =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
 
     bubble.className =
         "chat-bubble";
 
 
-    /*
-     * textContent is intentionally used here.
-     * This prevents AI responses from being
-     * interpreted as HTML.
-     */
+    // User message
+    if (sender === "user") {
 
-    bubble.textContent =
-        message;
+        bubble.textContent =
+            message;
 
-
-    // --------------------------------------------------------
-    // Build message
-    // --------------------------------------------------------
-
-    messageRow.appendChild(
-        avatar
-    );
-
-    messageRow.appendChild(
-        bubble
-    );
-
-    chatMessages.appendChild(
-        messageRow
-    );
+    }
 
 
-    // --------------------------------------------------------
-    // Scroll to latest message
-    // --------------------------------------------------------
+    // AI message
+    else {
 
-    chatMessages.scrollTop =
-        chatMessages.scrollHeight;
+        bubble.innerHTML =
+            formatAIResponse(message);
+
+    }
+
+
+    // Add elements
+    messageRow.appendChild(avatar);
+
+    messageRow.appendChild(bubble);
+
+    chatMessages.appendChild(messageRow);
+
+
+    // Scroll
+    requestAnimationFrame(function () {
+
+        chatMessages.scrollTop =
+            chatMessages.scrollHeight;
+
+    });
 
 }
 
@@ -390,10 +846,6 @@ async function sendChatMessage() {
     }
 
 
-    // --------------------------------------------------------
-    // Get message
-    // --------------------------------------------------------
-
     const message =
         input.value.trim();
 
@@ -405,10 +857,15 @@ async function sendChatMessage() {
     }
 
 
-    // --------------------------------------------------------
-    // Add user's message
-    // --------------------------------------------------------
+    // Prevent duplicate requests
+    if (sendButton.disabled) {
 
+        return;
+
+    }
+
+
+    // Add user message
     addChatMessage(
         message,
         "user"
@@ -416,35 +873,22 @@ async function sendChatMessage() {
 
 
     // Clear input
-
     input.value = "";
 
 
-    // --------------------------------------------------------
-    // Disable send button
-    // --------------------------------------------------------
-
-    sendButton.disabled =
-        true;
-
+    // Disable button
+    sendButton.disabled = true;
 
     sendButton.textContent =
         "Thinking...";
 
 
-    // --------------------------------------------------------
-    // Show typing indicator
-    // --------------------------------------------------------
-
+    // Show typing
     const typingId =
         showTypingIndicator();
 
 
     try {
-
-        // ----------------------------------------------------
-        // Send request to Flask
-        // ----------------------------------------------------
 
         const response =
             await fetch(
@@ -472,47 +916,59 @@ async function sendChatMessage() {
             );
 
 
-        // ----------------------------------------------------
-        // Read response
-        // ----------------------------------------------------
-
-        const data =
-            await response.json();
+        let data = {};
 
 
-        // Remove typing animation
+        try {
 
-        removeTypingIndicator(
-            typingId
-        );
+            data =
+                await response.json();
 
+        }
 
-        // ----------------------------------------------------
-        // Check server response
-        // ----------------------------------------------------
-
-        if (!response.ok) {
+        catch (error) {
 
             throw new Error(
-                data.reply ||
-                "Unable to contact the AI assistant."
+                "Invalid server response."
             );
 
         }
 
 
-        // ----------------------------------------------------
-        // Add AI response
-        // ----------------------------------------------------
-
-        addChatMessage(
-            data.reply ||
-            "I couldn't generate a response.",
-            "assistant"
+        // Remove typing
+        removeTypingIndicator(
+            typingId
         );
 
 
-    } catch (error) {
+        // Server error
+        if (!response.ok) {
+
+            throw new Error(
+                data.reply ||
+                data.error ||
+                "Unable to contact AI assistant."
+            );
+
+        }
+
+
+        // Get reply
+        const reply =
+            data.reply ||
+            data.message ||
+            "I couldn't generate a response.";
+
+
+        // Add AI response
+        addChatMessage(
+            reply,
+            "assistant"
+        );
+
+    }
+
+    catch (error) {
 
         console.error(
             "Chat error:",
@@ -520,36 +976,28 @@ async function sendChatMessage() {
         );
 
 
-        // Remove typing indicator
-
         removeTypingIndicator(
             typingId
         );
 
 
-        // Show friendly error
-
         addChatMessage(
 
-            "Sorry, I couldn't connect to the AI Health Assistant right now. Please check your Groq configuration.",
+            "Sorry, I couldn't connect to the AI Health Assistant right now. Please check your Groq API configuration and make sure the Flask server is running.",
 
             "assistant"
 
         );
 
-    } finally {
+    }
 
-        // ----------------------------------------------------
-        // Enable button again
-        // ----------------------------------------------------
+    finally {
 
         sendButton.disabled =
             false;
 
-
         sendButton.textContent =
             "Send";
-
 
         input.focus();
 
@@ -582,14 +1030,8 @@ function showTypingIndicator() {
         Date.now();
 
 
-    // --------------------------------------------------------
-    // Row
-    // --------------------------------------------------------
-
     const row =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
 
     row.className =
@@ -600,14 +1042,8 @@ function showTypingIndicator() {
         id;
 
 
-    // --------------------------------------------------------
-    // Avatar
-    // --------------------------------------------------------
-
     const avatar =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
 
     avatar.className =
@@ -618,14 +1054,8 @@ function showTypingIndicator() {
         "🤖";
 
 
-    // --------------------------------------------------------
-    // Bubble
-    // --------------------------------------------------------
-
     const bubble =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
 
     bubble.className =
@@ -641,27 +1071,12 @@ function showTypingIndicator() {
     `;
 
 
-    // --------------------------------------------------------
-    // Build
-    // --------------------------------------------------------
+    row.appendChild(avatar);
 
-    row.appendChild(
-        avatar
-    );
+    row.appendChild(bubble);
 
-    row.appendChild(
-        bubble
-    );
+    chatMessages.appendChild(row);
 
-
-    chatMessages.appendChild(
-        row
-    );
-
-
-    // --------------------------------------------------------
-    // Scroll
-    // --------------------------------------------------------
 
     chatMessages.scrollTop =
         chatMessages.scrollHeight;
@@ -686,9 +1101,7 @@ function removeTypingIndicator(id) {
 
 
     const element =
-        document.getElementById(
-            id
-        );
+        document.getElementById(id);
 
 
     if (element) {
