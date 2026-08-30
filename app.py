@@ -1,18 +1,21 @@
+
 # ============================================================
 # LIFESTYLE DISEASE / SLEEP DISORDER PREDICTION SYSTEM
 # Random Forest + SHAP Explainable AI
 # ============================================================
 
+import os
 import pandas as pd
 import numpy as np
 import shap
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file, jsonify
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 
 from groq_chatbot import chat_with_groq
+
 
 # ============================================================
 # INITIALIZE FLASK
@@ -22,15 +25,28 @@ app = Flask(__name__)
 
 
 # ============================================================
+# PROJECT DIRECTORY
+# ============================================================
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+# ============================================================
 # LOAD DATASET
 # ============================================================
 
 sleep_df = pd.read_csv(
-    "Sleep_health_and_lifestyle_dataset.csv"
+    os.path.join(
+        BASE_DIR,
+        "Sleep_health_and_lifestyle_dataset.csv"
+    )
 )
 
 synthetic_df = pd.read_csv(
-    "synthetic_health_lifestyle_dataset.csv"
+    os.path.join(
+        BASE_DIR,
+        "synthetic_health_lifestyle_dataset.csv"
+    )
 )
 
 df = pd.concat(
@@ -99,7 +115,8 @@ target = "Sleep Disorder"
 # ============================================================
 
 missing_columns = [
-    col for col in features + [target]
+    col
+    for col in features + [target]
     if col not in df.columns
 ]
 
@@ -155,7 +172,6 @@ for col in features:
 # ============================================================
 
 X = df[features]
-
 y = df[target]
 
 
@@ -383,7 +399,6 @@ def predict():
         list
     ):
 
-        # Older SHAP versions
         class_index = int(
             pred_encoded
         )
@@ -402,9 +417,6 @@ def predict():
     elif len(
         np.asarray(shap_values).shape
     ) == 3:
-
-        # Newer SHAP:
-        # (samples, features, classes)
 
         class_index = int(
             pred_encoded
@@ -425,8 +437,6 @@ def predict():
 
 
     else:
-
-        # Binary / simple output
 
         shap_for_class = np.asarray(
             shap_values[0]
@@ -711,34 +721,95 @@ def predict():
 
     )
 
-@app.route("/chat", methods=["POST"])
-def chat():
-    data = request.get_json()
 
-    message = data.get("message", "").strip()
+# ============================================================
+# ROUTE: GROQ AI CHATBOT
+# ============================================================
+
+@app.route(
+    "/chat",
+    methods=["POST"]
+)
+def chat():
+
+    data = request.get_json(
+        silent=True
+    )
+
+    if not data:
+
+        return jsonify({
+            "reply": "Invalid request."
+        }), 400
+
+    message = data.get(
+        "message",
+        ""
+    ).strip()
 
     if not message:
-        return {
-            "reply": "Please enter a question."
-        }, 400
 
-    context = data.get("context", "")
+        return jsonify({
+            "reply": "Please enter a question."
+        }), 400
+
+    context = data.get(
+        "context",
+        ""
+    )
 
     reply = chat_with_groq(
         message=message,
         context=context
     )
 
-    return {
+    return jsonify({
         "reply": reply
-    } 
+    })
+
 
 # ============================================================
-# RUN APPLICATION
+# ROUTE: DOWNLOAD TRAINED MODEL
+# ============================================================
+
+@app.route(
+    "/download-model"
+)
+def download_model():
+
+    model_path = os.path.join(
+        BASE_DIR,
+        "sleep_disorder_model.pkl"
+    )
+
+    if not os.path.exists(
+        model_path
+    ):
+
+        return jsonify({
+            "error": "Trained model file not found."
+        }), 404
+
+    return send_file(
+        model_path,
+        as_attachment=True,
+        download_name="sleep_disorder_model.pkl"
+    )
+
+
+# ============================================================
+# RUN APPLICATION LOCALLY
 # ============================================================
 
 if __name__ == "__main__":
 
     app.run(
-        debug=True
+        host="0.0.0.0",
+        port=int(
+            os.environ.get(
+                "PORT",
+                5000
+            )
+        ),
+        debug=False
     )
