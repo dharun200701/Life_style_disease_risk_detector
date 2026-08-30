@@ -1,115 +1,69 @@
-# Lifestyle Disease Risk Prediction System
+# 🩺 Life Style Disease Risk Detector
 
-An AI-powered web application that predicts the risk of lifestyle-related diseases based on user-provided health and lifestyle information. The system combines **Machine Learning**, **web technologies**, and an **AI chatbot** to provide users with risk predictions, health-related insights, and an interactive experience.
+An **AI-powered lifestyle and sleep health risk prediction system** that analyzes lifestyle and health parameters to predict potential sleep-related health conditions. The system combines **Machine Learning, SHAP Explainable AI, and a Groq-powered health assistant** to provide understandable and personalized results.
+
+## 🚀 Live Demo
+
+### 🌐 Try the Application
+
+**https://life-style-disease-risk-detector.onrender.com**
+
+> ⚠️ The application is intended for educational and research purposes. It is not a substitute for professional medical diagnosis or treatment.
 
 ---
 
 ## 📌 Project Overview
 
-Lifestyle-related diseases such as **diabetes, heart disease, hypertension, and obesity** are strongly associated with factors such as diet, physical activity, sleep, stress, age, and other health conditions.
+Lifestyle-related health problems are increasingly influenced by factors such as sleep duration, physical activity, BMI, age, gender, and blood pressure.
 
-This project aims to provide an accessible early-risk assessment system by analyzing user input through a trained machine learning model.
+This project provides an interactive web application where users enter their lifestyle and health information. A **Random Forest machine learning model** analyzes the information and predicts the most likely sleep-related condition.
 
-The application allows users to:
+The system also uses **SHAP (SHapley Additive exPlanations)** to explain which input features contributed most to the prediction.
 
-* Enter personal and lifestyle information.
-* Submit the information through a web interface.
-* Predict the user's disease-risk level using a trained ML model.
-* Display the prediction through a dedicated result page.
-* Provide understandable health-related information.
-* Interact with an AI chatbot for additional guidance.
-* Receive a simple and user-friendly interpretation of the prediction.
-
-> **Disclaimer:** This application is intended for educational and preliminary risk-assessment purposes only. It is not a substitute for professional medical diagnosis or treatment.
-
----
-
-## 🎯 Objectives
-
-The major objectives of the project are:
-
-1. To develop a machine-learning-based lifestyle disease risk prediction system.
-2. To analyze important lifestyle and health-related factors.
-3. To provide an easy-to-use web interface for prediction.
-4. To present prediction results in a clear and understandable format.
-5. To integrate an AI-powered chatbot for interactive assistance.
-6. To encourage users to become more aware of lifestyle factors associated with disease risk.
-7. To provide a foundation for future healthcare-oriented AI applications.
+An integrated **Groq AI Health Assistant** allows users to ask questions about their prediction and receive AI-generated lifestyle guidance.
 
 ---
 
 ## ✨ Key Features
 
-### 1. User Input Module
+* 🧠 **Machine Learning Prediction**
 
-Users can enter relevant information such as:
+  * Random Forest classification model
+  * Predicts sleep-related health conditions
 
-* Age
-* Gender
-* Height and weight
-* BMI-related information
-* Physical activity
-* Dietary habits
-* Sleep patterns
-* Smoking/alcohol-related lifestyle factors
-* Existing health-related information
-* Other model-specific parameters
+* 📊 **Risk Assessment**
 
-The collected values are processed before being provided to the prediction model.
+  * Calculates prediction confidence
+  * Provides a simplified risk score
+  * Categorizes results into Low, Medium, and High risk
 
-### 2. Machine Learning Prediction
+* 🔍 **SHAP Explainable AI**
 
-The system processes the submitted information and uses a trained machine learning model to estimate the user's disease-risk category.
+  * Shows which health factors influenced the prediction
+  * Displays positive and negative feature contributions
+  * Makes machine-learning predictions easier to understand
 
-The prediction pipeline generally consists of:
+* 🤖 **AI Health Assistant**
 
-```text
-User Input
-     ↓
-Data Validation
-     ↓
-Preprocessing
-     ↓
-Feature Transformation
-     ↓
-Trained ML Model
-     ↓
-Risk Prediction
-     ↓
-Result Page
-```
+  * Powered by Groq
+  * Answers questions related to the prediction
+  * Provides lifestyle-oriented recommendations
+  * Uses the user's prediction context
 
-### 3. Result Page
+* 💡 **Personalized Recommendations**
 
-The result page presents the prediction in a simple format so that users can easily understand the outcome.
+  * Suggestions based on important contributing factors
+  * Covers sleep, physical activity, BMI, blood pressure, and lifestyle habits
 
-It can display:
+* 🎨 **Interactive Web Interface**
 
-* Predicted risk
-* Risk category
-* Relevant health information
-* Recommendations
-* Additional guidance
+  * Responsive HTML/CSS/JavaScript frontend
+  * Flask-based backend
+  * Interactive prediction and results dashboard
 
-### 4. AI Chatbot
+* 📥 **Trained Model Download**
 
-The project includes an AI chatbot integrated using **Groq API**.
-
-The chatbot provides an interactive way for users to ask questions related to:
-
-* Lifestyle
-* Healthy habits
-* Exercise
-* Nutrition
-* Sleep
-* General health awareness
-* Understanding prediction results
-
-The chatbot is designed as an additional assistance feature and does not replace professional medical advice.
-
-### 5. Responsive Web Interface
-
-The frontend is designed to provide a simple and accessible experience across different screen sizes.
+  * Allows users to download the trained model
 
 ---
 
@@ -118,109 +72,178 @@ The frontend is designed to provide a simple and accessible experience across di
 ```text
                     ┌──────────────────────┐
                     │       User           │
+                    │  Health Information  │
                     └──────────┬───────────┘
                                │
                                ▼
                     ┌──────────────────────┐
-                    │   Web Interface      │
-                    │ HTML / CSS / JS      │
+                    │     Flask Web App    │
+                    │       app.py         │
                     └──────────┬───────────┘
                                │
                                ▼
                     ┌──────────────────────┐
-                    │  Input Validation &  │
-                    │    Preprocessing     │
+                    │   Data Processing    │
+                    │ Pandas + Encoders    │
                     └──────────┬───────────┘
                                │
                                ▼
                     ┌──────────────────────┐
-                    │   ML Prediction      │
-                    │       Model          │
+                    │   Random Forest      │
+                    │   Classification     │
+                    └──────────┬───────────┘
+                               │
+                 ┌─────────────┴─────────────┐
+                 ▼                           ▼
+        ┌─────────────────┐        ┌─────────────────┐
+        │  SHAP Analysis  │        │ Risk Assessment │
+        └────────┬────────┘        └────────┬────────┘
+                 │                           │
+                 └─────────────┬─────────────┘
+                               ▼
+                    ┌──────────────────────┐
+                    │    Results Dashboard │
+                    │ Prediction + SHAP +  │
+                    │ Recommendations      │
                     └──────────┬───────────┘
                                │
                                ▼
                     ┌──────────────────────┐
-                    │    Result Page       │
-                    │  Risk Interpretation │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │   AI Health Chatbot  │
-                    │     Groq API         │
+                    │   Groq AI Assistant  │
+                    │   Health Q&A         │
                     └──────────────────────┘
 ```
 
 ---
 
-## 🧠 Machine Learning Pipeline
+## 🧠 Machine Learning
 
-The machine learning workflow includes the following stages:
+### Algorithm
 
-### Data Collection
+The primary prediction model is:
 
-A suitable lifestyle/health dataset is used to train the prediction model.
+**Random Forest Classifier**
 
-### Data Preprocessing
+Configuration includes:
 
-The dataset is cleaned and transformed before training.
+* 200 decision trees
+* Balanced class weights
+* Fixed random state for reproducibility
+* Parallel training using available CPU cores
 
-Typical preprocessing operations include:
+### Input Features
 
-* Handling missing values
-* Removing unnecessary attributes
-* Encoding categorical variables
-* Feature scaling/normalization
-* Selecting relevant features
-* Splitting data into training and testing sets
+The model uses the following health and lifestyle parameters:
 
-### Model Training
+| Feature                 | Description              |
+| ----------------------- | ------------------------ |
+| Age                     | User's age               |
+| Gender                  | User's gender            |
+| Sleep Duration          | Average daily sleep      |
+| Physical Activity Level | Daily activity level     |
+| BMI Category            | Body Mass Index category |
+| Systolic BP             | Systolic blood pressure  |
+| Diastolic BP            | Diastolic blood pressure |
 
-The processed dataset is used to train the selected machine learning algorithm.
+### Target
 
-### Model Evaluation
+The prediction target is:
 
-The model can be evaluated using metrics such as:
+**Sleep Disorder**
 
-* Accuracy
-* Precision
-* Recall
-* F1-score
-* Confusion Matrix
+The system can identify sleep-related categories such as:
 
-### Model Deployment
-
-The trained model is saved and integrated with the web application so that new user inputs can be processed and predictions can be generated.
+* None
+* Insomnia
+* Sleep Apnea
 
 ---
 
-## 🤖 AI Chatbot Architecture
+## 🔍 Explainable AI with SHAP
 
-The chatbot uses the Groq API to generate conversational responses.
+A major feature of this project is **SHAP-based explainability**.
+
+Instead of showing only:
 
 ```text
-User
-  │
-  ▼
-Chatbot Interface
-  │
-  ▼
-JavaScript Request
-  │
-  ▼
-Backend / API Layer
-  │
-  ▼
-Groq API
-  │
-  ▼
-AI-generated Response
-  │
-  ▼
-Chatbot Interface
+Prediction: Insomnia
 ```
 
-The chatbot operates independently from the ML prediction pipeline while providing additional conversational assistance.
+the application also explains **why the model made that prediction**.
+
+For example:
+
+```text
+Sleep Duration       ██████████
+Physical Activity    ███████
+BMI Category         █████
+Blood Pressure       ███
+```
+
+The SHAP analysis identifies the relative contribution of each feature to the prediction.
+
+This improves transparency and helps users understand the factors associated with the model's output.
+
+---
+
+## 🤖 Groq AI Health Assistant
+
+The application includes an AI-powered health assistant using the **Groq API**.
+
+Users can ask questions such as:
+
+```text
+Why did I get this prediction?
+
+What lifestyle changes should I make?
+
+Explain my SHAP factors.
+
+How can I improve my sleep?
+```
+
+The assistant receives the prediction context and provides general lifestyle-oriented information.
+
+The API key is stored securely as an environment variable:
+
+```text
+GROQ_API_KEY
+```
+
+It is **not stored in the source code**.
+
+---
+
+## 📁 Project Structure
+
+```text
+Life_style_disease_risk_detector/
+│
+├── app.py
+├── groq_chatbot.py
+├── lifestyle.py
+├── model_comparsion.py
+├── preprocessing.py
+│
+├── model_metadata.pkl
+├── sleep_disorder_model.pkl
+│
+├── Sleep_health_and_lifestyle_dataset.csv
+├── synthetic_health_lifestyle_dataset.csv
+│
+├── templates/
+│   ├── index.html
+│   └── result.html
+│
+├── static/
+│   ├── style.css
+│   ├── script.js
+│   ├── result.css
+│   └── result.js
+│
+├── requirements.txt
+└── README.md
+```
 
 ---
 
@@ -231,7 +254,7 @@ The chatbot operates independently from the ML prediction pipeline while providi
 * HTML5
 * CSS3
 * JavaScript
-* Responsive UI design
+* Jinja2
 
 ### Backend
 
@@ -240,350 +263,247 @@ The chatbot operates independently from the ML prediction pipeline while providi
 
 ### Machine Learning
 
-* Python
 * Scikit-learn
+* Random Forest
 * Pandas
 * NumPy
-* Joblib/Pickle for model persistence
 
-### AI Integration
+### Explainable AI
+
+* SHAP
+
+### Generative AI
 
 * Groq API
-* Large Language Model based chatbot
 
-### Development Tools
+### Deployment
+
+* Render
+* Gunicorn
+
+### Development
 
 * Git
 * GitHub
-* Visual Studio Code
-* Python Virtual Environment
-
----
-
-## 📂 Project Structure
-
-The project is organized approximately as follows:
-
-```text
-Lifestyle-Disease-Prediction/
-│
-├── app.py
-│
-├── requirements.txt
-├── README.md
-├── .gitignore
-│
-├── templates/
-│   ├── index.html
-│   └── result.html
-│
-├── static/
-│   ├── css/
-│   │   └── style.css
-│   │
-│   ├── js/
-│   │   └── script.js
-│   │
-│   └── images/
-│
-├── model/
-│   └── trained_model.pkl
-│
-├── dataset/
-│   └── dataset.csv
-│
-└── notebooks/
-    └── model_training.ipynb
-```
-
-> The exact file/folder names may vary depending on the latest project version.
+* VS Code
 
 ---
 
 ## ⚙️ Installation
 
-### 1. Clone the Repository
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/<your-repository>.git
+git clone https://github.com/dharun200701/Life_style_disease_risk_detector.git
 ```
 
-### 2. Navigate to the Project Directory
+### 2. Move into the project directory
 
 ```bash
-cd Lifestyle-Disease-Prediction
+cd Life_style_disease_risk_detector
 ```
 
-### 3. Create a Virtual Environment
+### 3. Create a virtual environment
+
+Windows:
 
 ```bash
 python -m venv .venv
 ```
 
-### 4. Activate the Virtual Environment
-
-#### Windows
+Activate it:
 
 ```bash
 .venv\Scripts\activate
 ```
 
-#### Linux/macOS
+Linux/macOS:
 
 ```bash
+python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### 5. Install Dependencies
+### 4. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
+### 5. Configure the Groq API
 
-## 🔐 Environment Variables
+Create a `.env` file locally:
 
-The Groq API key should **not** be hard-coded in the source code.
-
-Create a `.env` file in the project root:
-
-```env
-GROQ_API_KEY=your_groq_api_key_here
+```text
+GROQ_API_KEY=your_groq_api_key
 ```
 
-Make sure `.env` is included in `.gitignore`:
+Never commit your `.env` file to GitHub.
 
-```gitignore
-.env
-.venv/
-__pycache__/
-*.pyc
-```
-
-Never commit your actual API key to GitHub.
-
----
-
-## ▶️ Running the Application
-
-After activating the virtual environment and installing the dependencies:
+### 6. Run locally
 
 ```bash
 python app.py
 ```
 
-The Flask development server will start.
-
-Open the local application in your browser using the address displayed by Flask, typically:
+Open:
 
 ```text
-http://127.0.0.1:5000/
+http://127.0.0.1:5000
 ```
+
+---
+
+## ☁️ Deployment
+
+The application is deployed using **Render** as a Flask web service.
+
+### Build Command
+
+```bash
+pip install -r requirements.txt
+```
+
+### Start Command
+
+```bash
+gunicorn app:app
+```
+
+### Environment Variable
+
+```text
+GROQ_API_KEY=your_groq_api_key
+```
+
+### Live Application
+
+🌐 **https://life-style-disease-risk-detector.onrender.com**
 
 ---
 
 ## 🔄 Application Workflow
 
 ```text
-1. User opens the application
-          ↓
-2. User enters health/lifestyle information
-          ↓
-3. Input validation is performed
-          ↓
+1. User opens the web application
+            ↓
+2. Enters lifestyle and health information
+            ↓
+3. Flask receives the submitted data
+            ↓
 4. Data is preprocessed
-          ↓
-5. ML model receives the processed features
-          ↓
-6. Risk prediction is generated
-          ↓
-7. Result is displayed
-          ↓
-8. User can interact with the AI chatbot
+            ↓
+5. Random Forest generates prediction
+            ↓
+6. Prediction confidence is calculated
+            ↓
+7. SHAP calculates feature contributions
+            ↓
+8. Risk level and score are generated
+            ↓
+9. Personalized recommendations are created
+            ↓
+10. Results dashboard is displayed
+            ↓
+11. User can interact with the Groq AI Assistant
 ```
 
 ---
 
-## 📊 Prediction Module
+## 📊 Explainability
 
-The prediction module is responsible for converting user-provided information into the format expected by the trained model.
+The project focuses not only on prediction but also on **understanding the prediction**.
 
-The general process is:
-
-```python
-Input Data
-    ↓
-Feature Extraction
-    ↓
-Encoding
-    ↓
-Scaling
-    ↓
-Model Prediction
-    ↓
-Risk Result
-```
-
-The trained model is loaded by the backend and used to generate predictions for new user inputs.
-
----
-
-## 💬 Chatbot Module
-
-The chatbot provides a conversational interface on the result/application page.
-
-Users can ask questions such as:
+### Traditional ML
 
 ```text
-What lifestyle changes can reduce disease risk?
+Input → Model → Prediction
 ```
+
+### This Project
 
 ```text
-Why is physical activity important?
+Input
+  ↓
+Machine Learning Model
+  ↓
+Prediction
+  ↓
+SHAP Explanation
+  ↓
+Risk Assessment
+  ↓
+Personalized Recommendations
+  ↓
+AI Health Assistant
 ```
 
-```text
-How can I improve my sleep?
+This makes the system more suitable for demonstrating **Explainable AI (XAI)** concepts.
+
+---
+
+## 🎯 Objectives
+
+* Predict lifestyle-related sleep health risks using machine learning.
+* Analyze important health and lifestyle factors.
+* Provide interpretable ML predictions using SHAP.
+* Generate personalized lifestyle recommendations.
+* Integrate generative AI for interactive health-related assistance.
+* Build and deploy a complete AI-powered healthcare web application.
+
+---
+
+## 🔮 Future Enhancements
+
+* [ ] Add more lifestyle disease prediction models
+* [ ] Improve model validation and cross-validation
+* [ ] Add model performance comparison dashboard
+* [ ] Add prediction history
+* [ ] Add user authentication
+* [ ] Add database support
+* [ ] Add interactive health analytics
+* [ ] Improve mobile responsiveness
+* [ ] Add multilingual support
+* [ ] Containerize the application using Docker
+* [ ] Optimize model loading for faster deployment
+* [ ] Add automated model monitoring
+
+---
+
+## ⚠️ Disclaimer
+
+This application is developed for **educational, research, and demonstration purposes**.
+
+The predictions and recommendations generated by this system should **not be considered medical advice, diagnosis, or treatment**.
+
+Users should consult a qualified healthcare professional for medical concerns.
+
+---
+
+## 👨‍💻 Developer
+
+**Dharun**
+
+GitHub:
+https://github.com/dharun200701
+
+Project Repository:
+https://github.com/dharun200701/Life_style_disease_risk_detector
+
+---
+
+## ⭐ Support
+
+If you find this project useful, consider giving the repository a ⭐ on GitHub.
+
+**Live Demo:**
+https://life-style-disease-risk-detector.onrender.com
+
+---
+
+### 📌 Keywords
+
+`Machine Learning` · `Random Forest` · `Flask` · `SHAP` · `Explainable AI` · `Healthcare AI` · `Lifestyle Disease` · `Sleep Disorder Prediction` · `Groq AI` · `Python` · `Artificial Intelligence` · `Web Application` · `Render`
+
 ```
-
-The chatbot sends the user's query to the configured AI service and displays the generated response.
-
----
-
-## 🗄️ Data Storage
-
-The application does not necessarily require a traditional database for the basic prediction workflow.
-
-The system primarily uses:
-
-* Dataset files for model training.
-* A saved trained model for prediction.
-* User input temporarily during the prediction request.
-* Environment variables for sensitive API configuration.
-
-If a database is added in a future version, it could be used to store user profiles, prediction history, chatbot conversations, or analytics.
-
----
-
-## 🔒 Security Considerations
-
-The following security practices should be followed:
-
-* Never expose API keys in frontend JavaScript.
-* Store secrets in environment variables.
-* Do not commit `.env` files.
-* Validate user inputs on the backend.
-* Avoid storing sensitive health information unnecessarily.
-* Use HTTPS when deploying the application publicly.
-* Keep dependencies updated.
-
----
-
-## 🧪 Testing
-
-The application can be tested at multiple levels.
-
-### Functional Testing
-
-Verify:
-
-* Input form submission
-* Prediction generation
-* Result-page rendering
-* Chatbot interaction
-* Error handling
-
-### Model Testing
-
-Evaluate:
-
-* Accuracy
-* Precision
-* Recall
-* F1-score
-* Confusion matrix
-
-### UI Testing
-
-Check the application on:
-
-* Desktop
-* Tablet
-* Mobile devices
-* Different modern browsers
-
----
-
-## 🚀 Future Enhancements
-
-Potential improvements include:
-
-* Support for multiple disease prediction models.
-* Personalized lifestyle recommendations.
-* User authentication.
-* Prediction history.
-* Database integration.
-* Interactive health dashboards.
-* Improved explainability using feature importance/SHAP.
-* Mobile application development.
-* Multilingual chatbot support.
-* Cloud deployment.
-* Integration with wearable-device data.
-* More advanced deep-learning models.
-* Continuous model improvement using validated datasets.
-
----
-
-## 🌍 Sustainable Development Goals
-
-The project is related to the following **United Nations Sustainable Development Goals (SDGs)**:
-
-### SDG 3 — Good Health and Well-being
-
-The project supports health awareness and early risk assessment by using AI and machine learning to analyze lifestyle-related risk factors.
-
-### SDG 9 — Industry, Innovation and Infrastructure
-
-The project demonstrates the application of artificial intelligence and machine learning in a healthcare-oriented system.
-
-### SDG 10 — Reduced Inequalities
-
-A web-based health-risk awareness system can potentially make preliminary health information more accessible to a wider range of users.
-
----
-
-## ⚠️ Medical Disclaimer
-
-This project is an **academic and educational prototype**.
-
-The predictions generated by this application should not be considered a medical diagnosis. Users should consult qualified healthcare professionals for medical evaluation, diagnosis, treatment, and personalized health advice.
-
----
-
-## 👨‍💻 Contributors
-
-**Lifestyle Disease Risk Prediction Project**
-
-Developed as an academic project focused on applying:
-
-* Machine Learning
-* Artificial Intelligence
-* Web Development
-* Healthcare Technology
-
----
-
-## 📜 License
-
-This project is intended primarily for academic and educational purposes.
-
-If you choose to publish it as open source, add an appropriate license such as the MIT License.
-
----
-
-## ⭐ Acknowledgements
-
-The project makes use of open-source technologies and machine-learning libraries, including Python, Flask, Pandas, NumPy, Scikit-learn, and related tools.
-
-Special acknowledgement is given to the datasets, research papers, open-source libraries, and AI technologies used during the development and evaluation of the project.
+```
